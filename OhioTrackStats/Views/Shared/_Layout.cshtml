@@ -1,0 +1,46 @@
+﻿@using OhioTrackStats.Extensions
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="author" content="Tony Morris" />
+    <meta name="description" content="@ViewBag.MetaDescription" />
+    <link rel="icon" href="/favicon.ico" />
+
+    <title>@ViewBag.Title | OhioTrackStats.com</title>
+
+    @Styles.Render("~/css/site")
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">OhioTrackStats.com</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">@Url.HeaderLink("Leaderboard", "Leaderboard", "Home")</li>
+                    <li class="nav-item">@Url.HeaderLink("Submit Performance", "Submit", "Home")</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="container">
+        @RenderBody()
+    </main>
+    <footer class="footer bg-dark">
+        <div class="container">
+            <p class="float-left">Copyright &copy; 2017 - @DateTime.UtcNow.Year OhioTrackStats.com, All Rights Reserved</p>
+            <ul class="float-right">
+                <li><a href="@Url.Action("Privacy", "Home")">Privacy Policy</a></li>
+                <li><a href="@Url.Action("Terms", "Home")">Terms of Use</a></li>
+            </ul>
+        </div>
+    </footer>
+    
+    @Scripts.Render("~/js/bootstrap")
+    @RenderSection("scripts", false)
+</body>
+</html>

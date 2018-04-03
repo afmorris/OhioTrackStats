@@ -1,0 +1,46 @@
+﻿@using OhioTrackStats.Extensions
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="author" content="Tony Morris" />
+    <meta name="description" content="@ViewBag.MetaDescription" />
+    <link rel="icon" href="/favicon.ico" />
+
+    <title>@ViewBag.Title | OhioTrackStats.com</title>
+
+    @Styles.Render("~/css/cover")
+</head>
+<body>
+    <div class="site-wrapper">
+        <div class="site-wrapper-inner">
+            <div class="cover-container">
+                <header class="masthead clearfix">
+                    <div class="inner">
+                        <h3 class="masthead-brand">
+                            OhioTrackStats.com
+                        </h3>
+                        <nav class="nav nav-masthead">
+                            @Url.HeaderLink("Leaderboard", "Leaderboard", "Home")
+                            @Url.HeaderLink("Submit Performance", "Submit", "Home")
+                        </nav>
+                    </div>
+                </header>
+                <main class="inner cover">
+                    @RenderBody()
+                </main>
+                <footer class="mastfoot">
+                    <div class="inner">
+                        <p>Copyright &copy; 2017 - @DateTime.UtcNow.Year OhioTrackStats.com, All Rights Reserved</p>
+                        <ul>
+                            <li><a href="@Url.Action("Privacy", "Home")">Privacy Policy</a></li>
+                            <li><a href="@Url.Action("Terms", "Home")">Terms of Use</a></li>
+                        </ul>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

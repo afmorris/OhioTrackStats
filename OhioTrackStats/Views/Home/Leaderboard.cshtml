@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Leaderboard";
+    ViewBag.MetaDescription = "OhioTrackStats.com Leaderboard";
+}
+
+@using OhioTrackStats.Constants
+@model OhioTrackStats.ViewModels.LeaderboardViewModel
+    
+<h2>Leaderboard</h2>
+<hr />
+<p>Choose any of the events below to view the leaderboard for that event.</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Male</th>
+        <th scope="col">Female</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for (int i = 0; i < Model.FemaleEvents.Count; i++)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(Model.MaleEvents[i].Name, "Event", new { name = Model.MaleEvents[i].SafeName, gender = Gender.Male })
+            </td>
+            <td>
+                @Html.ActionLink(Model.FemaleEvents[i].Name, "Event", new { name = Model.FemaleEvents[i].SafeName, gender = Gender.Female })
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

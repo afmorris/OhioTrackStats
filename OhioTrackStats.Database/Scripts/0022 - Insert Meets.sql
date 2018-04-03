@@ -1,0 +1,1 @@
+﻿INSERT INTO [dbo].[Meet] ([Name], [LocationId], [Date]) VALUES ('Black Bear Relays', (SELECT TOP 1 l.[Id] FROM [dbo].[Location] l WHERE l.[City] = 'Warsaw'), '3/24/2018');

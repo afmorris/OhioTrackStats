@@ -1,0 +1,24 @@
+﻿CREATE TABLE [dbo].[County]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(), 
+    [Name] NVARCHAR(200) NOT NULL, 
+    [InsertedDate] DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(), 
+    [UpdatedDate] DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
+)
+
+GO
+
+CREATE TRIGGER [dbo].[County_AfterUpdate]
+    ON [dbo].[County]
+    FOR UPDATE
+    AS
+    BEGIN
+        SET NoCount ON
+		UPDATE
+			[dbo].[County]
+		SET
+			[UpdatedDate] = SYSDATETIMEOFFSET()
+		WHERE
+			[Id] = (SELECT DISTINCT [Id] FROM inserted);
+    END
+GO

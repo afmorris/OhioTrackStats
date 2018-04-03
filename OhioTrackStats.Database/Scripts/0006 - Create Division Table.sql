@@ -1,0 +1,25 @@
+﻿CREATE TABLE [dbo].[Division]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(), 
+    [Name] NVARCHAR(25) NOT NULL,
+	[Order] INT NOT NULL,
+    [InsertedDate] DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(), 
+    [UpdatedDate] DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
+)
+
+GO
+
+CREATE TRIGGER [dbo].[Division_AfterUpdate]
+    ON [dbo].[Division]
+    FOR UPDATE
+    AS
+    BEGIN
+        SET NoCount ON
+		UPDATE
+			[dbo].[Division]
+		SET
+			[UpdatedDate] = SYSDATETIMEOFFSET()
+		WHERE
+			[Id] = (SELECT DISTINCT [Id] FROM inserted);
+    END
+GO

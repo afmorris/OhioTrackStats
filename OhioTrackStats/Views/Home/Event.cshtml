@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = $"{Model.Event.Name} | {Model.Event.Gender}";
+    ViewBag.MetaDescription = "OhioTrackStats.com Event";
+}
+
+@model OhioTrackStats.ViewModels.EventViewModel
+    
+<h2>@Model.Event.Name | @Model.Event.Gender</h2>
+<hr />
+<div class="row">
+    @foreach (var eventDivision in Model.EventDivisions)
+    {
+        int i = 1;
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Division @eventDivision.Division</strong>
+                </div>
+                <table class="table table-bordered mb-0">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        @if (!Model.Event.IsRelayEvent)
+                        {
+                            <th>Name</th>
+                        }
+                        <th>School</th>
+                        <th>Stat</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var performance in eventDivision.Performances)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            @if (!Model.Event.IsRelayEvent)
+                            {
+                                <td>@performance.FirstName @performance.LastName</td>
+                            }
+                            <td>@performance.School</td>
+                            @if (Model.Event.IsRunningEvent)
+                            {
+                                <td>@performance.PerformanceData.Time.ToString(@"mm\:ss\.ff")</td>
+                            }
+                            else
+                            {
+                                <td>@performance.PerformanceData.Distance.Feet.ToString("###")<text>-</text>@performance.PerformanceData.Distance.Inches.ToString("00.00")</td>
+                            }
+                        </tr>
+                        i++;
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
