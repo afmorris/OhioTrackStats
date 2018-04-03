@@ -186,6 +186,7 @@
     <Compile Include="DataModels\Converters\TimingMethodConverter.cs" />
     <Compile Include="DataModels\Converters\GenderConverter.cs" />
     <Compile Include="DataModels\PerformanceView.cs" />
+    <Compile Include="DataModels\SerializationConverters\GenderSerializationConverter.cs" />
     <Compile Include="Extensions\HtmlExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -297,6 +298,7 @@
     <Content Include="Views\Home\Error404.cshtml" />
     <Content Include="Views\Admin\Bulk.cshtml" />
     <Content Include="Views\Admin\AthleteEntry.cshtml" />
+    <Content Include="Views\Admin\View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

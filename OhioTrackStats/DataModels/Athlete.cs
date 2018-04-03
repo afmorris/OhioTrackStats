@@ -4,6 +4,7 @@
 //   All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace OhioTrackStats.DataModels
 {
     using System;
@@ -23,7 +24,7 @@ namespace OhioTrackStats.DataModels
         /// <summary>
         /// Gets or sets the year in which the athlete graduates.
         /// </summary>
-        public int GraduationYear { get; set; }
+        public int? GraduationYear { get; set; }
 
         /// <summary>
         /// Gets or sets the athlete's first name.

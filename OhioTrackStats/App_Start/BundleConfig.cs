@@ -22,7 +22,7 @@ namespace OhioTrackStats
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/js/bootstrap").Include(
-                "~/Scripts/jquery-{version}.slim.js",
+                "~/Scripts/jquery-{version}.js",
                 "~/Scripts/popper.js",
                 "~/Scripts/bootstrap.js"));
 

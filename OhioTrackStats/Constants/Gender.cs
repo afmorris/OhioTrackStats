@@ -4,13 +4,17 @@
 //   All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
+using Newtonsoft.Json;
+using OhioTrackStats.DataModels.SerializationConverters;
+
 namespace OhioTrackStats.Constants
 {
     using System;
 
     /// <summary>
     /// Represents a gender.
-    /// </summary>
+    [JsonConverter(typeof(GenderSerializationConverter))]
     public class Gender : IEquatable<Gender>, IEquatable<string>
     {
         /// <summary>
