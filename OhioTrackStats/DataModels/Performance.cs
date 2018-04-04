@@ -21,6 +21,7 @@ namespace OhioTrackStats.DataModels
         /// <summary>
         /// Gets or sets the event identifier for the performance.
         /// </summary>
+        [References(typeof(TrackAndFieldEvent))]
         public Guid EventId { get; set; }
 
         /// <summary>
@@ -69,6 +70,8 @@ namespace OhioTrackStats.DataModels
         /// Gets or sets the date of the approval.
         /// </summary>
         public DateTimeOffset ApprovalDate { get; set; }
+
+        public bool NeedsAssociated { get; set; }
 
         [Reference]
         public TrackAndFieldEvent Event { get; set; }

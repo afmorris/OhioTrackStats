@@ -175,7 +175,7 @@ namespace OhioTrackStats.Controllers
             using (var db = this.databaseFactory.Open())
             {
                 vm.Athletes = db.LoadSelect<Athlete>().OrderBy(x => x.GraduationYear).ThenBy(x => x.LastName).ThenBy(x => x.SchoolId).ToList();
-                vm.Performances = db.LoadSelect<Performance>().OrderBy(x => x.InsertedDate).ToList();
+                vm.Performances = db.LoadSelect<Performance>(x => x.NeedsAssociated).OrderBy(x => x.InsertedDate).ToList();
             }
 
             return this.View(vm);
@@ -185,6 +185,20 @@ namespace OhioTrackStats.Controllers
         {
             using (var db = this.databaseFactory.Open())
             {
+                var performance = db.LoadSingleById<Performance>(viewModel.SelectedPerformanceId);
+                if (performance.Event.IsRelayEvent)
+                {
+                    var count = db.Count<AthletePerformance>(x => x.PerformanceId == viewModel.SelectedPerformanceId);
+                    if (count == 3)
+                    {
+                        db.UpdateOnly(() => new Performance { NeedsAssociated = false }, p => p.Id == viewModel.SelectedPerformanceId);
+                    }
+                }
+                else
+                {
+                    db.UpdateOnly(() => new Performance { NeedsAssociated = false }, p => p.Id == viewModel.SelectedPerformanceId);
+                }
+
                 db.Insert(new AthletePerformance
                 {
                     AthleteId = viewModel.SelectedAthleteId,

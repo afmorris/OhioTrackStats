@@ -128,5 +128,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\0024 - Insert Enrollments.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\0026 - Add NeedsAssociated column to Performance Table.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

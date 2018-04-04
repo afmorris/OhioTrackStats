@@ -23,13 +23,14 @@
     <div class="form-group row">
         @Html.LabelFor(x => x.SelectedPerformanceId, new { @class = "col-sm-2 col-form-label-lg" })
         <div class="col-sm-10">
-            @Html.DropDownListFor(x => x.SelectedPerformanceId, new SelectList(Model.Performances.Select(y => new { Value = y.Id, Text = $"{y.}" }), "Value", "Text"), new { @class = "form-control form-control-lg" })
+            @Html.DropDownListFor(x => x.SelectedPerformanceId, new SelectList(Model.Performances.Select(y => new { Value = y.Id, Text = $"{y.Data}, {y.Event.Name}, {y.Event.Gender} ({y.School.OhsaaTournamentName})" }), "Value", "Text"), new { @class = "form-control form-control-lg" })
         </div>
     </div>
 
     <div class="form-group row">
         <div class="col-sm-10">
             <button type="submit" class="btn btn-primary">Add</button>
+            @Html.ActionLink("Back", "Index", new { }, new { @class = "btn btn-secondary"})
         </div>
     </div>
 }
