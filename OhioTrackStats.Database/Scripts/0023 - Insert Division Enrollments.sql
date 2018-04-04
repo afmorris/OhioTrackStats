@@ -1,0 +1,3 @@
+﻿INSERT INTO [dbo].[DivisionEnrollment] ([Year], [MaleMax], [MaleMin], [FemaleMax], [FemaleMin], [DivisionId]) VALUES (2018, 9999, 300, 9999, 298, (SELECT TOP 1 d.[Id] FROM [Division] d WHERE d.[Name] = '1'));
+INSERT INTO [dbo].[DivisionEnrollment] ([Year], [MaleMax], [MaleMin], [FemaleMax], [FemaleMin], [DivisionId]) VALUES (2018, 299, 155, 297, 155, (SELECT TOP 1 d.[Id] FROM [Division] d WHERE d.[Name] = '2'));
+INSERT INTO [dbo].[DivisionEnrollment] ([Year], [MaleMax], [MaleMin], [FemaleMax], [FemaleMin], [DivisionId]) VALUES (2018, 154, 0, 154, 0, (SELECT TOP 1 d.[Id] FROM [Division] d WHERE d.[Name] = '3'));

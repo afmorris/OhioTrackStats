@@ -203,8 +203,12 @@
     <Compile Include="Constants\TimingMethod.cs" />
     <Compile Include="DataModels\TrackAndFieldEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\Admin\AssociateAthletePerformanceViewModel.cs" />
     <Compile Include="ViewModels\Admin\AthleteEntryViewModel.cs" />
     <Compile Include="ViewModels\Admin\BulkViewModel.cs" />
+    <Compile Include="ViewModels\Admin\LocationEntryViewModel.cs" />
+    <Compile Include="ViewModels\Admin\MeetEntryViewModel.cs" />
+    <Compile Include="ViewModels\Admin\PerformanceEntryViewModel.cs" />
     <Compile Include="ViewModels\EventDivisionViewModel.cs" />
     <Compile Include="ViewModels\EventViewModel.cs" />
     <Compile Include="ViewModels\LeaderboardViewModel.cs" />
@@ -296,9 +300,13 @@
     <Content Include="Views\Home\Terms.cshtml" />
     <Content Include="Views\Home\Event.cshtml" />
     <Content Include="Views\Home\Error404.cshtml" />
-    <Content Include="Views\Admin\Bulk.cshtml" />
     <Content Include="Views\Admin\AthleteEntry.cshtml" />
     <Content Include="Views\Admin\View.cshtml" />
+    <Content Include="Views\Admin\LocationEntry.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Admin\MeetEntry.cshtml" />
+    <Content Include="Views\Admin\PerformanceEntry.cshtml" />
+    <Content Include="Views\Admin\AssociateAthletePerformance.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

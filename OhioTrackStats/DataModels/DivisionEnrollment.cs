@@ -4,6 +4,9 @@
 //   All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
+using ServiceStack.DataAnnotations;
+
 namespace OhioTrackStats.DataModels
 {
     using System;
@@ -42,5 +45,8 @@ namespace OhioTrackStats.DataModels
         /// Gets or sets the division identifier.
         /// </summary>
         public Guid DivisionId { get; set; }
+
+        [Reference]
+        public Division Division { get; set; }
     }
 }

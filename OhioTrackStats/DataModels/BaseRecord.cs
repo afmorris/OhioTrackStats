@@ -17,16 +17,16 @@ namespace OhioTrackStats.DataModels
     {
         /// <inheritdoc />
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <inheritdoc />
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTimeOffset InsertedDate { get; set; }
+        public DateTimeOffset InsertedDate { get; set; } = DateTimeOffset.Now;
 
         /// <inheritdoc />
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTimeOffset UpdatedDate { get; set; }
+        public DateTimeOffset UpdatedDate { get; set; } = DateTimeOffset.Now;
     }
 }

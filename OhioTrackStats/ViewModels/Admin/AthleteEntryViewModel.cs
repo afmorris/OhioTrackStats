@@ -25,6 +25,9 @@ namespace OhioTrackStats.ViewModels.Admin
         [DisplayName("Last Name")]
         public string LastName { get; set; }
 
+        [DisplayName("Gender")]
+        public string Gender { get; set; }
+
         [DisplayName("Graduation Year")]
         public int? GraduationYear { get; set; }
 

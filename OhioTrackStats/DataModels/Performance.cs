@@ -4,6 +4,9 @@
 //   All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
+using ServiceStack.DataAnnotations;
+
 namespace OhioTrackStats.DataModels
 {
     using System;
@@ -66,5 +69,14 @@ namespace OhioTrackStats.DataModels
         /// Gets or sets the date of the approval.
         /// </summary>
         public DateTimeOffset ApprovalDate { get; set; }
+
+        [Reference]
+        public TrackAndFieldEvent Event { get; set; }
+
+        [Reference]
+        public School School { get; set; }
+
+        [Reference]
+        public Meet Meet { get; set; }
     }
 }

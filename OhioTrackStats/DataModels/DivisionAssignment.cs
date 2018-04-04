@@ -4,6 +4,9 @@
 //   All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
+using ServiceStack.DataAnnotations;
+
 namespace OhioTrackStats.DataModels
 {
     using System;
@@ -34,5 +37,11 @@ namespace OhioTrackStats.DataModels
         /// Gets or sets the year.
         /// </summary>
         public int Year { get; set; }
+
+        [Reference]
+        public Division Division { get; set; }
+
+        [Reference]
+        public School School { get; set; }
     }
 }

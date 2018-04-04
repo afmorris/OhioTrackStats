@@ -3,9 +3,10 @@
     ViewBag.MetaDescription = "OhioTrackStats.com Athlete Entry";
 }
 
+@using OhioTrackStats.Constants
 @model OhioTrackStats.ViewModels.Admin.AthleteEntryViewModel
 
-<h1>Athlete Entry</h1>
+<h2>Athlete Entry</h2>
 <hr />
 @using (Html.BeginForm())
 {
@@ -15,7 +16,7 @@
     <div class="form-group row">
         @Html.LabelFor(x => x.SelectedSchoolId, new { @class = "col-sm-2 col-form-label-lg" })
         <div class="col-sm-10">
-            @Html.DropDownListFor(x => x.SelectedSchoolId, new SelectList(Model.Schools.Select(y => new { Value = y.Id, Text = y.Name }), "Value", "Text"), new { @class = "form-control form-control-lg" })
+            @Html.DropDownListFor(x => x.SelectedSchoolId, new SelectList(Model.Schools.Select(y => new { Value = y.Id, Text = $"{y.Name} ({y.OhsaaTournamentName})" }), "Value", "Text"), new { @class = "form-control form-control-lg" })
         </div>
     </div>
 
@@ -30,6 +31,13 @@
         @Html.LabelFor(x => x.LastName, new { @class = "col-sm-2 col-form-label-lg" })
         <div class="col-sm-10">
             @Html.TextBoxFor(x => x.LastName, new { @class = "form-control form-control-lg" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.LabelFor(x => x.Gender, new { @class = "col-sm-2 col-form-label-lg" })
+        <div class="col-sm-10">
+            @Html.DropDownListFor(x => x.Gender, new SelectList(new List<Gender> { Gender.Male, Gender.Female }), new { @class = "form-control form-control-lg" })
         </div>
     </div>
 

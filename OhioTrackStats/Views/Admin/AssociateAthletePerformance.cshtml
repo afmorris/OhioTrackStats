@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "Associate Athlete Performance";
+    ViewBag.MetaDescription = "OhioTrackStats.com Associate Athlete Performance";
+}
+
+@using OhioTrackStats.Constants
+@model OhioTrackStats.ViewModels.Admin.AssociateAthletePerformanceViewModel
+
+<h2>Associate Athlete Performance</h2>
+<hr />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group row">
+        @Html.LabelFor(x => x.SelectedAthleteId, new { @class = "col-sm-2 col-form-label-lg" })
+        <div class="col-sm-10">
+            @Html.DropDownListFor(x => x.SelectedAthleteId, new SelectList(Model.Athletes.Select(y => new { Value = y.Id, Text = $"{y.LastName}, {y.FirstName} ({y.Gender}, {y.School.OhsaaTournamentName})" }), "Value", "Text"), new { @class = "form-control form-control-lg" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @Html.LabelFor(x => x.SelectedPerformanceId, new { @class = "col-sm-2 col-form-label-lg" })
+        <div class="col-sm-10">
+            @Html.DropDownListFor(x => x.SelectedPerformanceId, new SelectList(Model.Performances.Select(y => new { Value = y.Id, Text = $"{y.}" }), "Value", "Text"), new { @class = "form-control form-control-lg" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+    </div>
+}

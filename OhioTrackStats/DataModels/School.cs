@@ -4,6 +4,9 @@
 //   All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
+using ServiceStack.DataAnnotations;
+
 namespace OhioTrackStats.DataModels
 {
     using System;
@@ -95,5 +98,17 @@ namespace OhioTrackStats.DataModels
         /// Gets or sets the school's type.
         /// </summary>
         public SchoolType SchoolType { get; set; }
+
+        [Reference]
+        public Conference Conference { get; set; }
+
+        [Reference]
+        public Location Location { get; set; }
+
+        [Reference]
+        public County County { get; set; }
+
+        [Reference]
+        public OhsaaDistrict OhsaaDistrict { get; set; }
     }
 }

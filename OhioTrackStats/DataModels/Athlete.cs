@@ -5,6 +5,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using ServiceStack.DataAnnotations;
+
 namespace OhioTrackStats.DataModels
 {
     using System;
@@ -40,5 +42,8 @@ namespace OhioTrackStats.DataModels
         /// Gets or sets the athlete's gender.
         /// </summary>
         public Gender Gender { get; set; }
+
+        [Reference]
+        public School School { get; set; }
     }
 }

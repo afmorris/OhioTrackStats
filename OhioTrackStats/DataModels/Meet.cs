@@ -4,6 +4,9 @@
 //   All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
+using ServiceStack.DataAnnotations;
+
 namespace OhioTrackStats.DataModels
 {
     using System;
@@ -27,5 +30,8 @@ namespace OhioTrackStats.DataModels
         /// Gets or sets the date of the meet.
         /// </summary>
         public DateTimeOffset Date { get; set; }
+
+        [Reference]
+        public Location Location { get; set; }
     }
 }

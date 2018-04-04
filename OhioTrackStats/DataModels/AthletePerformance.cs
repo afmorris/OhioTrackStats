@@ -4,6 +4,9 @@
 //   All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
+using ServiceStack.DataAnnotations;
+
 namespace OhioTrackStats.DataModels
 {
     using System;
@@ -22,5 +25,11 @@ namespace OhioTrackStats.DataModels
         /// Gets or sets the performance's identifier.
         /// </summary>
         public Guid PerformanceId { get; set; }
+
+        [Reference]
+        public Athlete Athlete { get; set; }
+
+        [Reference]
+        public Performance Performance { get; set; }
     }
 }
