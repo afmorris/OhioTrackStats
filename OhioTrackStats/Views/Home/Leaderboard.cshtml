@@ -6,14 +6,14 @@
 @using OhioTrackStats.Constants
 @model OhioTrackStats.ViewModels.LeaderboardViewModel
     
-<h2>Leaderboard</h2>
+<h2 class="text-center">Leaderboard</h2>
 <hr />
-<p>Choose any of the events below to view the leaderboard for that event.</p>
+<p class="text-center">Choose any of the events below to view the leaderboard for that event.</p>
 
 <table class="table">
     <thead>
     <tr>
-        <th scope="col">Male</th>
+        <th scope="col" class="text-right">Male</th>
         <th scope="col">Female</th>
     </tr>
     </thead>
@@ -21,7 +21,7 @@
     @for (int i = 0; i < Model.FemaleEvents.Count; i++)
     {
         <tr>
-            <td>
+            <td class="text-right">
                 @Html.ActionLink(Model.MaleEvents[i].Name, "Event", new { name = Model.MaleEvents[i].SafeName, gender = Gender.Male })
             </td>
             <td>

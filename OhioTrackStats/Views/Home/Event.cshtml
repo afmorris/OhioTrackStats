@@ -5,7 +5,7 @@
 
 @model OhioTrackStats.ViewModels.EventViewModel
     
-<h2>@Model.Event.Name | @Model.Event.Gender</h2>
+<h1 class="text-center">@Model.Event.Name | @Model.Event.Gender</h1>
 <hr />
 <div class="row">
     @foreach (var eventDivision in Model.EventDivisions)
