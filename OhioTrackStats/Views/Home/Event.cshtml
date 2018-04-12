@@ -25,7 +25,7 @@
                             <th>Name</th>
                         }
                         <th>School</th>
-                        <th>Stat</th>
+                        <th class="text-right">Stat</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -40,11 +40,11 @@
                             <td>@performance.School</td>
                             @if (Model.Event.IsRunningEvent)
                             {
-                                <td>@performance.PerformanceData.Time.ToString(@"mm\:ss\.ff")</td>
+                                <td class="text-right">@performance.PerformanceData.Time.ToString(@"mm\:ss\.ff")</td>
                             }
                             else
                             {
-                                <td>@performance.PerformanceData.Distance.Feet.ToString("###")<text>-</text>@performance.PerformanceData.Distance.Inches.ToString("00.00")</td>
+                                <td class="text-right">@performance.PerformanceData.Distance.Feet.ToString("###")<text>-</text>@performance.PerformanceData.Distance.Inches.ToString("00.00")</td>
                             }
                         </tr>
                         i++;

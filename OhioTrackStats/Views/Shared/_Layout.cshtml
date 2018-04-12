@@ -24,6 +24,9 @@
                     <li class="nav-item">@Url.HeaderLink("Leaderboard", "Leaderboard", "Home")</li>
                     <li class="nav-item">@Url.HeaderLink("Submit Performance", "Submit", "Home")</li>
                 </ul>
+                <span class="navbar-text">
+                    Last Updated: @DateTime.Now Eastern
+                </span>
             </div>
         </div>
     </nav>
@@ -32,7 +35,7 @@
     </main>
     <footer class="footer bg-dark">
         <div class="container">
-            <p class="float-left">Copyright &copy; 2017 - @DateTime.UtcNow.Year OhioTrackStats.com, All Rights Reserved</p>
+            <p class="float-left">Copyright &copy; 2017 - @DateTime.UtcNow.Year OhioTrackStats.com, All Rights Reserved.</p>
             <ul class="float-right">
                 <li><a href="@Url.Action("Privacy", "Home")">Privacy Policy</a></li>
                 <li><a href="@Url.Action("Terms", "Home")">Terms of Use</a></li>
