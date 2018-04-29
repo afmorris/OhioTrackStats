@@ -1,0 +1,48 @@
+﻿@using ServiceStack
+@model OhioTrackStats.ViewModels.Admin.UploadReviewViewModel
+
+@{
+    ViewBag.Title = "Review HY-TEK Upload";
+    ViewBag.MetaDescription = "OhioTrackStats.com Review HY-TEK Upload";
+}
+
+<h2>Review HY-TEK Upload</h2>
+<hr />
+@if (Model.Error.IsNullOrEmpty())
+{
+    <h3>Meet: @Model.Meet.Name on @Model.Meet.Date.ToString("g")</h3>
+
+    foreach (var ev in Model.Events)
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>@ev.Event</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var performance in ev.Performances)
+                {
+                    <tr>
+                        <td>
+                            <ul>
+                                @foreach (var athlete in performance.Athletes)
+                                {
+                                    <li>@athlete.FirstName @athlete.LastName</li>
+                                }
+                            </ul>
+                        </td>
+                        <td>
+                            @performance.Performance.Data
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+    }
+}
+else
+{
+    <h3>Error: @Model.Error</h3>
+}

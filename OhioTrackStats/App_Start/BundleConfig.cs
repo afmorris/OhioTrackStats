@@ -39,6 +39,12 @@ namespace OhioTrackStats
 
             bundles.Add(new ScriptBundle("~/js/submit").Include(
                 "~/Scripts/submit.js"));
+
+            bundles.Add(new ScriptBundle("~/js/chosen").Include(
+                "~/Scripts/chosen/chosen.jquery.js"));
+
+            bundles.Add(new StyleBundle("~/css/chosen").Include(
+                "~/Content/chosen/chosen.css"));
         }
     }
 }

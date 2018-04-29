@@ -45,5 +45,10 @@ namespace OhioTrackStats.DataModels
         /// Gets or sets the order to display the event.
         /// </summary>
         public int Order { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Name} | {Gender}";
+        }
     }
 }

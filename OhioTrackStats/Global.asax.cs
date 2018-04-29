@@ -5,6 +5,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using OhioTrackStats.Grammar.Models;
+
 namespace OhioTrackStats
 {
     using System.Drawing;
@@ -31,6 +34,9 @@ namespace OhioTrackStats
     /// </summary>
     public class MvcApplication : HttpApplication
     {
+        public static Dictionary<string, HashSet<string>> SchoolLookup { get; set; } = new Dictionary<string, HashSet<string>>();
+        public static IList<Event> GrammarEvents { get; set; } = new List<Event>();
+
         /// <summary>
         /// Executes when the application starts up. Used to setup the application.
         /// </summary>
@@ -52,6 +58,12 @@ namespace OhioTrackStats
 
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+        }
+
+        public static void ResetUploadData()
+        {
+            SchoolLookup = new Dictionary<string, HashSet<string>>();
+            GrammarEvents = new List<Event>();
         }
     }
 }

@@ -6,8 +6,15 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Web;
+using Antlr4.Runtime;
 using Newtonsoft.Json;
 using OhioTrackStats.Constants;
+using OhioTrackStats.Grammar.Listeners;
+using OhioTrackStats.Grammar.Models;
+using ServiceStack;
 
 namespace OhioTrackStats.Controllers
 {
@@ -31,6 +38,71 @@ namespace OhioTrackStats.Controllers
         public ActionResult Index()
         {
             return this.View();
+        }
+
+        [Route("upload")]
+        public ActionResult Upload()
+        {
+            var vm = new UploadFileViewModel();
+
+            using (var db = this.databaseFactory.Open())
+            {
+                vm.Schools = db.Select<School>().Where(x => !x.OhsaaTournamentName.IsNullOrEmpty()).OrderBy(x => x.OhsaaTournamentName).ToList();
+            }
+
+            return this.View(vm);
+        }
+
+        [Route("upload-review")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UploadReview(UploadFileViewModel viewModel)
+        {
+            var vm = new UploadReviewViewModel();
+            viewModel.MeetDate = new DateTimeOffset(viewModel.MeetDate.Date, TimeSpan.Zero);
+
+            try
+            {
+                string data;
+                using (var streamReader = new StreamReader(Request.Files[0]?.InputStream ?? throw new InvalidOperationException()))
+                {
+                    data = streamReader.ReadToEnd();
+                }
+
+                var schoolTranslations = viewModel.SchoolTranslation.Split(new [] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                var lookup = new Dictionary<string, HashSet<string>>();
+                foreach (var translation in schoolTranslations)
+                {
+                    var split = translation.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+                    var namesInFile = split[0].Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
+                    var lookupName = split[1];
+
+                    lookup.Add(lookupName, new HashSet<string>(namesInFile.Select(x => x)));
+                }
+
+                MvcApplication.ResetUploadData();
+                MvcApplication.SchoolLookup = lookup;
+
+                AntlrInputStream inputStream = new AntlrInputStream(data);
+                HyTekLexer lexer = new HyTekLexer(inputStream);
+                CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+                HyTekParser parser = new HyTekParser(tokenStream);
+                parser.AddParseListener(new EventListener());
+                parser.init();
+
+                var schools = MvcApplication.SchoolLookup;
+                var grammarEvents = MvcApplication.GrammarEvents;
+
+                //PopulateViewModel(vm, )
+
+                MvcApplication.ResetUploadData();
+            }
+            catch (Exception ex)
+            {
+                vm.Error = ex.ToString();
+            }
+
+            return this.View(vm);
         }
 
         [Route("athlete")]
