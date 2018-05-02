@@ -12,285 +12,324 @@ namespace OhioTrackStats.Grammar.Listeners
 
         public override void ExitEvent(HyTekParser.EventContext context)
         {
-            var @event = new Event();
-
-            @event.EventInfo.Gender = context.eventInfo().eventGender().GetText();
-            @event.EventInfo.Name = context.eventInfo().eventName().GetText();
-
-            //@event.EventHeader = context.eventHeader().GetText();
-
-            foreach (var eventResult in context.eventResult())
+            try
             {
-                if (eventResult.individualResult() != null)
+                var @event = new Event();
+
+                @event.EventInfo.Gender = context.eventInfo().eventGender().GetText();
+                @event.EventInfo.Name = context.eventInfo().eventName().GetText();
+
+                //@event.EventHeader = context.eventHeader().GetText();
+
+                foreach (var eventResult in context.eventResult())
                 {
-                    var individualContext = eventResult.individualResult();
-                    if (_noPerformance.Any(individualContext.performance().GetText().Contains))
+                    if (eventResult.individualResult() != null)
                     {
-                        continue;
-                    }
-
-                    var result = new IndividualResult();
-                    int.TryParse(individualContext.place().GetText(), out var place);
-                    result.Place = place;
-
-                    var athleteNameTokenGroups = individualContext.athleteName().words();
-                    var athleteNameList = new List<string>();
-                    foreach (var tokenGroup in athleteNameTokenGroups)
-                    {
-                        if (tokenGroup?.children != null)
+                        var individualContext = eventResult.individualResult();
+                        if (_noPerformance.Any(individualContext.performance().GetText().Contains))
                         {
-                            foreach (var child in tokenGroup.children)
+                            continue;
+                        }
+
+                        var result = new IndividualResult();
+                        int.TryParse(individualContext.place().GetText(), out var place);
+                        result.Place = place;
+
+                        var athleteNameTokenGroups = individualContext.athleteName().words();
+                        var athleteNameList = new List<string>();
+                        foreach (var tokenGroup in athleteNameTokenGroups)
+                        {
+                            if (tokenGroup?.children != null)
                             {
-                                athleteNameList.Add(child.GetText());
+                                foreach (var child in tokenGroup.children)
+                                {
+                                    athleteNameList.Add(child.GetText());
+                                }
                             }
                         }
-                    }
 
-                    result.AthleteName = string.Join(" ", athleteNameList);
+                        result.AthleteName = string.Join(" ", athleteNameList);
 
-                    //result.AthleteName = string.Join(" ", individualContext.athleteName().words().children);
+                        //result.AthleteName = string.Join(" ", individualContext.athleteName().words().children);
 
-                    foreach (var kvp in MvcApplication.SchoolLookup)
-                    {
-                        foreach (var schoolName in kvp.Value)
+                        foreach (var kvp in MvcApplication.SchoolLookup)
                         {
-                            if (result.AthleteName.Contains(schoolName))
+                            foreach (var schoolName in kvp.Value)
                             {
-                                result.SchoolName = schoolName;
-                                result.AthleteName = result.AthleteName.Replace($" {schoolName}", "");
+                                if (result.AthleteName.Contains(schoolName))
+                                {
+                                    result.SchoolName = schoolName;
+                                    result.AthleteName = result.AthleteName.Replace($" {schoolName}", "");
+                                }
                             }
                         }
-                    }
 
-                    if (individualContext.athleteYear() != null)
-                    {
-                        int.TryParse(individualContext.athleteYear().GetText(), out var athleteYear);
-                        result.AthleteYear = athleteYear;
-                    }
-
-                    if (string.IsNullOrEmpty(result.SchoolName))
-                    {
-                        result.SchoolName = string.Join(" ", individualContext.schoolName().words().children);
-                    }
-
-                    if (individualContext.seed() != null)
-                    {
-                        result.Seed = new Performance();
-                        if (individualContext.seed().time() != null)
+                        if (individualContext.athleteYear() != null)
                         {
+                            int.TryParse(individualContext.athleteYear().GetText(), out var athleteYear);
+                            result.AthleteYear = athleteYear;
+                        }
+
+                        if (string.IsNullOrEmpty(result.SchoolName))
+                        {
+                            result.SchoolName = string.Join(" ", individualContext.schoolName().words().children);
+                        }
+
+                        if (individualContext.seed() != null)
+                        {
+                            result.Seed = new Performance();
+                            if (individualContext.seed().time() != null)
+                            {
+                                float seedMinutes = 0;
+                                if (individualContext.seed().time().minute() != null)
+                                {
+                                    float.TryParse(individualContext.seed().time().minute().GetText(), out seedMinutes);
+                                }
+
+                                float.TryParse(individualContext.seed().time().second().GetText(), out var seedSeconds);
+                                float.TryParse(individualContext.seed().time().@decimal().GetText(),
+                                    out var seedDecimal);
+
+                                var seedData = (seedMinutes * 60) + seedSeconds + (seedDecimal / 100);
+                                result.Seed.Data = Math.Round(seedData, 2);
+                            }
+                            else if (individualContext.seed().distance() != null)
+                            {
+                                float.TryParse(individualContext.seed().distance().foot().GetText(), out var seedFeet);
+                                float.TryParse(individualContext.seed().distance().inch().GetText(),
+                                    out var seedInches);
+                                float seedDecimal = 0;
+                                if (individualContext.seed().distance().@decimal() != null)
+                                {
+                                    float.TryParse(individualContext.seed().distance().@decimal().GetText(),
+                                        out seedDecimal);
+                                }
+
+                                var seedData = (seedFeet * 12) + seedInches + (seedDecimal / 100);
+                                result.Seed.Data = Math.Round(seedData, 2);
+                            }
+                        }
+
+                        result.Performance = new Performance();
+                        if (individualContext.performance().time() != null)
+                        {
+                            float performanceMinutes = 0;
+                            if (individualContext.performance().time().minute() != null)
+                            {
+                                float.TryParse(individualContext.performance().time().minute().GetText(),
+                                    out performanceMinutes);
+                            }
+
+                            float.TryParse(individualContext.performance().time().second().GetText(),
+                                out var performanceSeconds);
+                            float.TryParse(individualContext.performance().time().@decimal().GetText(),
+                                out var performanceDecimal);
+
+                            var performanceData = (performanceMinutes * 60) + performanceSeconds +
+                                                  (performanceDecimal / 100);
+                            SanityCheck(performanceData, @event.EventInfo.Name, @event.EventInfo.Gender);
+                            result.Performance.Data = Math.Round(performanceData, 2);
+                        }
+                        else if (individualContext.performance().distance() != null)
+                        {
+                            float.TryParse(individualContext.performance().distance().foot().GetText(),
+                                out var performanceFeet);
+                            float.TryParse(individualContext.performance().distance().inch().GetText(),
+                                out var performanceInches);
+                            float performanceDecimal = 0;
+                            if (individualContext.performance().distance().@decimal() != null)
+                            {
+                                float.TryParse(individualContext.performance().distance().@decimal().GetText(),
+                                    out performanceDecimal);
+                            }
+
+                            var performanceData =
+                                (performanceFeet * 12) + performanceInches + (performanceDecimal / 100);
+                            SanityCheck(performanceData, @event.EventInfo.Name, @event.EventInfo.Gender);
+                            result.Performance.Data = Math.Round(performanceData, 2);
+                        }
+
+                        if (individualContext.heatNumber() != null)
+                        {
+                            int.TryParse(individualContext.heatNumber().GetText(), out var heatNumber);
+                            result.HeatNumber = heatNumber;
+                        }
+
+                        if (individualContext.points() != null)
+                        {
+                            int.TryParse(individualContext.points().GetText(), out var points);
+                            result.Points = points;
+                        }
+
+                        if (individualContext.tiebreaker() != null)
+                        {
+                            result.Tiebreaker = new Performance();
+                            if (individualContext.tiebreaker().time() != null)
+                            {
+                                float tiebreakerMinutes = 0;
+                                if (individualContext.tiebreaker().time().minute() != null)
+                                {
+                                    float.TryParse(individualContext.tiebreaker().time().minute().GetText(),
+                                        out tiebreakerMinutes);
+                                }
+
+                                float.TryParse(individualContext.tiebreaker().time().second().GetText(),
+                                    out var tiebreakerSeconds);
+                                float.TryParse(individualContext.tiebreaker().time().@decimal().GetText(),
+                                    out var tiebreakerDecimal);
+
+                                var tiebreakerData =
+                                    (tiebreakerMinutes * 60) + tiebreakerSeconds + (tiebreakerDecimal / 100);
+                                result.Tiebreaker.Data = Math.Round(tiebreakerData, 2);
+                            }
+                            else if (individualContext.tiebreaker().distance() != null)
+                            {
+                                float.TryParse(individualContext.tiebreaker().distance().foot().GetText(),
+                                    out var tiebreakerFeet);
+                                float.TryParse(individualContext.tiebreaker().distance().inch().GetText(),
+                                    out var tiebreakerInches);
+                                float tiebreakerDecimal = 0;
+                                if (individualContext.tiebreaker().distance().@decimal() != null)
+                                {
+                                    float.TryParse(individualContext.tiebreaker().distance().@decimal().GetText(),
+                                        out tiebreakerDecimal);
+                                }
+
+                                var tiebreakerData =
+                                    (tiebreakerFeet * 12) + tiebreakerInches + (tiebreakerDecimal / 100);
+                                result.Tiebreaker.Data = Math.Round(tiebreakerData, 2);
+                            }
+                        }
+
+                        @event.EventResults.Add(result);
+                    }
+                    else if (eventResult.relayResult() != null)
+                    {
+                        var relayContext = eventResult.relayResult();
+
+                        if (_noPerformance.Any(relayContext.performance().GetText().Contains))
+                        {
+                            continue;
+                        }
+
+                        var result = new RelayResult();
+                        int.TryParse(relayContext.place().GetText(), out var place);
+                        result.Place = place;
+                        result.SchoolName = string.Join(" ", relayContext.schoolName().words().children);
+                        if (relayContext.seed() != null)
+                        {
+                            result.Seed = new Performance();
                             float seedMinutes = 0;
-                            if (individualContext.seed().time().minute() != null)
+                            if (relayContext.seed().time().minute() != null)
                             {
-                                float.TryParse(individualContext.seed().time().minute().GetText(), out seedMinutes);
+                                float.TryParse(relayContext.seed().time().minute().GetText(), out seedMinutes);
                             }
 
-                            float.TryParse(individualContext.seed().time().second().GetText(), out var seedSeconds);
-                            float.TryParse(individualContext.seed().time().@decimal().GetText(), out var seedDecimal);
+                            float.TryParse(relayContext.seed().time().second().GetText(), out var seedSeconds);
+                            float.TryParse(relayContext.seed().time().@decimal().GetText(), out var seedDecimal);
 
                             var seedData = (seedMinutes * 60) + seedSeconds + (seedDecimal / 100);
                             result.Seed.Data = Math.Round(seedData, 2);
                         }
-                        else if (individualContext.seed().distance() != null)
-                        {
-                            float.TryParse(individualContext.seed().distance().foot().GetText(), out var seedFeet);
-                            float.TryParse(individualContext.seed().distance().inch().GetText(), out var seedInches);
-                            float seedDecimal = 0;
-                            if (individualContext.seed().distance().@decimal() != null)
-                            {
-                                float.TryParse(individualContext.seed().distance().@decimal().GetText(), out seedDecimal);
-                            }
 
-                            var seedData = (seedFeet * 12) + seedInches + (seedDecimal / 100);
-                            result.Seed.Data = Math.Round(seedData, 2);
-                        }
-                    }
-
-                    result.Performance = new Performance();
-                    if (individualContext.performance().time() != null)
-                    {
+                        result.Performance = new Performance();
                         float performanceMinutes = 0;
-                        if (individualContext.performance().time().minute() != null)
+                        if (relayContext.performance().time().minute() != null)
                         {
-                            float.TryParse(individualContext.performance().time().minute().GetText(), out performanceMinutes);
-                        }
-                        float.TryParse(individualContext.performance().time().second().GetText(), out var performanceSeconds);
-                        float.TryParse(individualContext.performance().time().@decimal().GetText(), out var performanceDecimal);
-
-                        var performanceData = (performanceMinutes * 60) + performanceSeconds + (performanceDecimal / 100);
-                        SanityCheck(performanceData, @event.EventInfo.Name, @event.EventInfo.Gender);
-                        result.Performance.Data = Math.Round(performanceData, 2);
-                    }
-                    else if (individualContext.performance().distance() != null)
-                    {
-                        float.TryParse(individualContext.performance().distance().foot().GetText(), out var performanceFeet);
-                        float.TryParse(individualContext.performance().distance().inch().GetText(), out var performanceInches);
-                        float performanceDecimal = 0;
-                        if (individualContext.performance().distance().@decimal() != null)
-                        {
-                            float.TryParse(individualContext.performance().distance().@decimal().GetText(), out performanceDecimal);
+                            float.TryParse(relayContext.performance().time().minute().GetText(),
+                                out performanceMinutes);
                         }
 
-                        var performanceData = (performanceFeet * 12) + performanceInches + (performanceDecimal / 100);
+                        float.TryParse(relayContext.performance().time().second().GetText(),
+                            out var performanceSeconds);
+                        float.TryParse(relayContext.performance().time().@decimal().GetText(),
+                            out var performanceDecimal);
+
+                        var performanceData =
+                            (performanceMinutes * 60) + performanceSeconds + (performanceDecimal / 100);
                         SanityCheck(performanceData, @event.EventInfo.Name, @event.EventInfo.Gender);
                         result.Performance.Data = Math.Round(performanceData, 2);
-                    }
 
-                    if (individualContext.heatNumber() != null)
-                    {
-                        int.TryParse(individualContext.heatNumber().GetText(), out var heatNumber);
-                        result.HeatNumber = heatNumber;
-                    }
-
-                    if (individualContext.points() != null)
-                    {
-                        int.TryParse(individualContext.points().GetText(), out var points);
-                        result.Points = points;
-                    }
-
-                    if (individualContext.tiebreaker() != null)
-                    {
-                        result.Tiebreaker = new Performance();
-                        if (individualContext.tiebreaker().time() != null)
+                        if (relayContext.heatNumber() != null)
                         {
+                            int.TryParse(relayContext.heatNumber().GetText(), out var heatNumber);
+                            result.HeatNumber = heatNumber;
+                        }
+
+                        if (relayContext.points() != null)
+                        {
+                            int.TryParse(relayContext.points().GetText(), out var points);
+                            result.Points = points;
+                        }
+
+                        if (relayContext.tiebreaker() != null)
+                        {
+                            result.Tiebreaker = new Performance();
                             float tiebreakerMinutes = 0;
-                            if (individualContext.tiebreaker().time().minute() != null)
+                            if (relayContext.tiebreaker().time().minute() != null)
                             {
-                                float.TryParse(individualContext.tiebreaker().time().minute().GetText(), out tiebreakerMinutes);
-                            }
-                            float.TryParse(individualContext.tiebreaker().time().second().GetText(), out var tiebreakerSeconds);
-                            float.TryParse(individualContext.tiebreaker().time().@decimal().GetText(), out var tiebreakerDecimal);
-
-                            var tiebreakerData = (tiebreakerMinutes * 60) + tiebreakerSeconds + (tiebreakerDecimal / 100);
-                            result.Tiebreaker.Data = Math.Round(tiebreakerData, 2);
-                        }
-                        else if (individualContext.tiebreaker().distance() != null)
-                        {
-                            float.TryParse(individualContext.tiebreaker().distance().foot().GetText(), out var tiebreakerFeet);
-                            float.TryParse(individualContext.tiebreaker().distance().inch().GetText(), out var tiebreakerInches);
-                            float tiebreakerDecimal = 0;
-                            if (individualContext.tiebreaker().distance().@decimal() != null)
-                            {
-                                float.TryParse(individualContext.tiebreaker().distance().@decimal().GetText(), out tiebreakerDecimal);
+                                float.TryParse(relayContext.tiebreaker().time().minute().GetText(),
+                                    out tiebreakerMinutes);
                             }
 
-                            var tiebreakerData = (tiebreakerFeet * 12) + tiebreakerInches + (tiebreakerDecimal / 100);
+                            float.TryParse(relayContext.tiebreaker().time().second().GetText(),
+                                out var tiebreakerSeconds);
+                            float.TryParse(relayContext.tiebreaker().time().@decimal().GetText(),
+                                out var tiebreakerDecimal);
+
+                            var tiebreakerData =
+                                (tiebreakerMinutes * 60) + tiebreakerSeconds + (tiebreakerDecimal / 100);
                             result.Tiebreaker.Data = Math.Round(tiebreakerData, 2);
                         }
-                    }
 
-                    @event.EventResults.Add(result);
-                }
-                else if (eventResult.relayResult() != null)
-                {
-                    var relayContext = eventResult.relayResult();
-
-                    if (_noPerformance.Any(relayContext.performance().GetText().Contains))
-                    {
-                        continue;
-                    }
-
-                    var result = new RelayResult();
-                    int.TryParse(relayContext.place().GetText(), out var place);
-                    result.Place = place;
-                    result.SchoolName = string.Join(" ", relayContext.schoolName().words().children);
-                    if (relayContext.seed() != null)
-                    {
-                        result.Seed = new Performance();
-                        float seedMinutes = 0;
-                        if (relayContext.seed().time().minute() != null)
+                        if (relayContext.legInfo() != null)
                         {
-                            float.TryParse(relayContext.seed().time().minute().GetText(), out seedMinutes);
-                        }
-                        float.TryParse(relayContext.seed().time().second().GetText(), out var seedSeconds);
-                        float.TryParse(relayContext.seed().time().@decimal().GetText(), out var seedDecimal);
+                            result.LegInfo = new LegInfo();
 
-                        var seedData = (seedMinutes * 60) + seedSeconds + (seedDecimal / 100);
-                        result.Seed.Data = Math.Round(seedData, 2);
-                    }
-
-                    result.Performance = new Performance();
-                    float performanceMinutes = 0;
-                    if (relayContext.performance().time().minute() != null)
-                    {
-                        float.TryParse(relayContext.performance().time().minute().GetText(), out performanceMinutes);
-                    }
-                    float.TryParse(relayContext.performance().time().second().GetText(), out var performanceSeconds);
-                    float.TryParse(relayContext.performance().time().@decimal().GetText(), out var performanceDecimal);
-
-                    var performanceData = (performanceMinutes * 60) + performanceSeconds + (performanceDecimal / 100);
-                    SanityCheck(performanceData, @event.EventInfo.Name, @event.EventInfo.Gender);
-                    result.Performance.Data = Math.Round(performanceData, 2);
-
-                    if (relayContext.heatNumber() != null)
-                    {
-                        int.TryParse(relayContext.heatNumber().GetText(), out var heatNumber);
-                        result.HeatNumber = heatNumber;
-                    }
-
-                    if (relayContext.points() != null)
-                    {
-                        int.TryParse(relayContext.points().GetText(), out var points);
-                        result.Points = points;
-                    }
-
-                    if (relayContext.tiebreaker() != null)
-                    {
-                        result.Tiebreaker = new Performance();
-                        float tiebreakerMinutes = 0;
-                        if (relayContext.tiebreaker().time().minute() != null)
-                        {
-                            float.TryParse(relayContext.tiebreaker().time().minute().GetText(), out tiebreakerMinutes);
-                        }
-                        float.TryParse(relayContext.tiebreaker().time().second().GetText(), out var tiebreakerSeconds);
-                        float.TryParse(relayContext.tiebreaker().time().@decimal().GetText(), out var tiebreakerDecimal);
-
-                        var tiebreakerData = (tiebreakerMinutes * 60) + tiebreakerSeconds + (tiebreakerDecimal / 100);
-                        result.Tiebreaker.Data = Math.Round(tiebreakerData, 2);
-                    }
-
-                    if (relayContext.legInfo() != null)
-                    {
-                        result.LegInfo = new LegInfo();
-
-                        foreach (var legContext in relayContext.legInfo().leg())
-                        {
-                            var leg = new Leg();
-
-                            int.TryParse(legContext.legNumber().GetText(), out int legNumber);
-                            leg.Number = legNumber;
-
-                            var athleteNameTokenGroups = legContext.athleteName().words();
-                            var athleteNameList = new List<string>();
-                            foreach (var tokenGroup in athleteNameTokenGroups)
+                            foreach (var legContext in relayContext.legInfo().leg())
                             {
-                                if (tokenGroup?.children != null)
+                                var leg = new Leg();
+
+                                int.TryParse(legContext.legNumber().GetText(), out int legNumber);
+                                leg.Number = legNumber;
+
+                                var athleteNameTokenGroups = legContext.athleteName().words();
+                                var athleteNameList = new List<string>();
+                                foreach (var tokenGroup in athleteNameTokenGroups)
                                 {
-                                    foreach (var child in tokenGroup.children)
+                                    if (tokenGroup?.children != null)
                                     {
-                                        athleteNameList.Add(child.GetText());
+                                        foreach (var child in tokenGroup.children)
+                                        {
+                                            athleteNameList.Add(child.GetText());
+                                        }
                                     }
                                 }
+
+                                leg.AthleteName = string.Join(" ", athleteNameList);
+
+                                //leg.AthleteName = string.Join(" ", legContext.athleteName().words().children);
+
+                                if (legContext.athleteYear() != null)
+                                {
+                                    int.TryParse(legContext.athleteYear().GetText(), out var athleteYear);
+                                    leg.AthleteYear = athleteYear;
+                                }
+
+                                result.LegInfo.Legs.Add(leg);
                             }
-
-                            leg.AthleteName = string.Join(" ", athleteNameList);
-
-                            //leg.AthleteName = string.Join(" ", legContext.athleteName().words().children);
-
-                            if (legContext.athleteYear() != null)
-                            {
-                                int.TryParse(legContext.athleteYear().GetText(), out var athleteYear);
-                                leg.AthleteYear = athleteYear;
-                            }
-
-                            result.LegInfo.Legs.Add(leg);
                         }
+
+                        @event.EventResults.Add(result);
                     }
 
-                    @event.EventResults.Add(result);
+                    MvcApplication.GrammarEvents.Add(@event);
                 }
             }
-
-            MvcApplication.GrammarEvents.Add(@event);
+            catch (Exception ex)
+            {
+                throw;
+            }
 
             base.ExitEvent(context);
         }

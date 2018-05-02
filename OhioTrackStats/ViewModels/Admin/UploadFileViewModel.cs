@@ -14,10 +14,11 @@ namespace OhioTrackStats.ViewModels.Admin
         public DateTimeOffset MeetDate { get; set; }
 
         [DisplayName("Schools")]
-        public IList<Guid> SelectedSchoolIds { get; set; }
+        public IList<Guid> SelectedSchoolIds { get; set; } = new List<Guid>();
 
         [DisplayName("School Translation")]
-        public string SchoolTranslation { get; set; }
-        public IList<School> Schools { get; set; }
+        public string SchoolTranslation { get; set; } = string.Empty;
+
+        public IList<School> Schools { get; set; } = new List<School>();
     }
 }
