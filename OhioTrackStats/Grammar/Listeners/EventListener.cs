@@ -322,9 +322,9 @@ namespace OhioTrackStats.Grammar.Listeners
 
                         @event.EventResults.Add(result);
                     }
-
-                    MvcApplication.GrammarEvents.Add(@event);
                 }
+
+                MvcApplication.GrammarEvents.Add(@event);
             }
             catch (Exception ex)
             {

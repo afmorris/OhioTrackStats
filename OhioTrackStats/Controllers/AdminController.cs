@@ -93,7 +93,7 @@ namespace OhioTrackStats.Controllers
                 var schools = MvcApplication.SchoolLookup;
                 var grammarEvents = MvcApplication.GrammarEvents;
 
-                //PopulateViewModel(vm, )
+                PopulateViewModel(vm, grammarEvents);
 
                 MvcApplication.ResetUploadData();
             }
@@ -103,6 +103,11 @@ namespace OhioTrackStats.Controllers
             }
 
             return this.View(vm);
+        }
+
+        private void PopulateViewModel(UploadReviewViewModel viewModel, IList<Event> grammarEvents)
+        {
+
         }
 
         [Route("athlete")]
